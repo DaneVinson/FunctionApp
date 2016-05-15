@@ -1,0 +1,68 @@
+﻿<!DOCTYPE HTML>
+<html lang='en'>
+<head>
+    <meta charset="utf-8" />
+    <title>Image Grabber</title>
+    <meta name="viewport" content="width=device-width" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+	<div class="container">
+		<h2>Image Grabber</h2>
+		<hr/>
+        <div class="row">
+            <div class="col-sm-8">
+                <form>
+                    <div class="form-group">
+                        <label for="uriInput">Image URI</label>
+                        <input type="text" class="form-control" id="uriInput">
+                    </div>
+                </form>
+                <button id="submitButton" class="btn btn-primary">Submit</button>
+                <br />
+                <br />
+                <div class="alert hidden" id="infoText"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<script>
+        $('#submitButton').click(function () {
+
+            // Create Auzre Function URI
+            var uri = $('#uriInput').val();
+            uri = 'https://danefunctionapp.azurewebsites.net/api/UploadImage?code={code}&image=' + uri;
+
+            // Create the request and its callback
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                var message = '';
+                var infoDiv = $('#infoText');
+                if (xmlHttp.readyState == 4) {
+                    if (xmlHttp.status == 0) {
+                        message = 'Indeterminate response. Likely cross-domain issues.';
+                        infoDiv.addClass('alert-warning');
+                    }
+                    else if (xmlHttp.status == 200) {
+                        message = xmlHttp.responseText;
+                        infoDiv.addClass('alert-success');
+                    }
+                    else {
+                        message = xmlHttp.responseText;
+                        infoDiv.addClass('alert-danger');
+                    }
+                }
+                if (message) {
+                    infoDiv.text(message);
+                    infoDiv.removeClass('hidden');
+                }
+            }
+
+            // Call
+            xmlHttp.open('GET', uri);
+            xmlHttp.send(null);
+        });
+	</script>
+</body>
+</html>
